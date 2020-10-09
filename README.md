@@ -1,4 +1,8 @@
-# Complex Networks
+#<h1 align="center">Complex Networks</h1>
+
+<div align="center">
+
+</div>
 
 ## Lab 2
 
