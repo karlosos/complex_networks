@@ -46,19 +46,19 @@ shortest.paths(graph, 8, 10, mode="out") # zamiast FROM TO numery wewzlow
 
 ## S5 Odczyt grafów skierowanych i wag krawdzi
 setwd("C:/Dev/complex_networks/lab_3/")
-graph <- read.graph("directed.txt", format="edgelist")
+graph <- read.graph("data/directed.txt", format="edgelist")
 
 # Graf skierowany - konwersja z data frame df
-df <- read.table("directed.txt", sep=" ", header = FALSE)
+df <- read.table("data/directed.txt", sep=" ", header = FALSE)
 df
 graph <- graph.data.frame(df)
 shortest.paths(graph, mode="out")
 shortest.paths(graph, mode="in")
 shortest.paths(graph, mode="all")
-shortest.paths(graph, FROM, TO, mode="out") # zamiast FROM TO numery wewzlow
+shortest.paths(graph, 1, 7, mode="out") # zamiast FROM TO numery wewzlow
 
 ## S6 Srednica z uwzglednieniem wag
-df <- read.table("weighted.txt", sep = " ", header = TRUE)
+df <- read.table("data/weighted.txt", sep = " ", header = TRUE)
 graph <- graph.data.frame(df, directed = FALSE)
 plot(graph, edge.label = paste(df$weight1, df$weight2, sep=" "))
 
@@ -98,13 +98,13 @@ V(graph) # 9 1 2 3 4 czyli wezel z etykieta 9 ma id 1
 V(graph)$name
 as.numeric(V(graph))
 plot(graph, vertex.label=V(graph)$name)
-plot(graph, vertex.label=as.nueric(V(graph)))
+plot(graph, vertex.label=as.numeric(V(graph)))
 neighbors(graph, 1) # sasiedzi 9
 neighbors(graph, "9")
 neighbors(graph, 9)
 
 ## S8 Alfanumeryczne nazwy wezlow w pliku
-df <- read.table("weighted_abc.txt", sep = " ", header = TRUE)
+df <- read.table("data/weighted_abc.txt", sep = " ", header = TRUE)
 graph <- graph.data.frame(df, directed = TRUE)
 plot(graph, vertex.label=V(graph)$name, edge.label = paste(df$weight1, df$weight2, sep=" "))
 V(graph)
@@ -115,7 +115,7 @@ plot(graph, vertex.label=V(graph)$name)
 plot(graph, vertex.label=as.numeric(V(graph)))
 
 ## S9 Sciezki wazone i odwolania do wezlow
-df <- read.table("weighted.txt", sep = " ", header = TRUE)
+df <- read.table("data/weighted.txt", sep = " ", header = TRUE)
 graph <- graph.data.frame(df, directed = TRUE)
 plot(graph, edge.label = paste(df$weight1, df$weight2, sep=" "))
 shortest.paths(graph, 1, weights=df$weight1, mode="out") # wynik wezla id=1 "9"
@@ -135,14 +135,14 @@ plot(graph)
 closeness(graph)
 closeness(graph,vids=c("1","2"))
 
-df <- read.table("closeness2.txt", sep = " ", header = TRUE )
+df <- read.table("data/closeness2.txt", sep = " ", header = TRUE )
 graph <- graph.data.frame(df, directed = FALSE )
 plot(graph, vertex.label=V(graph)$name)
 closeness(graph)
 closeness(graph,vids=c("1", "9"))
 
 ## S11 Closeness dla grafow skierowanych i wazonych
-df <- read.table("closeness.txt", sep = " ", header = TRUE)
+df <- read.table("data/closeness.txt", sep = " ", header = TRUE)
 graph <- graph.data.frame(df, directed = FALSE )
 plot(graph,edge.label = paste(df$weight1, df$weight2,sep=" "))
 closeness(graph, weights = df$weight1)
@@ -157,7 +157,7 @@ graph <- sample_gnm(n=10, m=20)
 plot(graph)
 betweenness(graph)
 
-df <- read.table("closeness2.txt", sep = " ", header = TRUE )
+df <- read.table("data/closeness2.txt", sep = " ", header = TRUE )
 graph <- graph.data.frame(df, directed = FALSE )
 plot(graph, vertex.label=V(graph)$name)
 betweenness(graph)
@@ -167,7 +167,7 @@ betweenness(graph, v = V(graph), directed = TRUE, weights = NULL,
             nobigint = TRUE, normalized = FALSE)
 
 ## S13 Eigenvector i clustering coefficient
-df <- read.table("directed.txt", sep = " ", header = TRUE )
+df <- read.table("data/directed.txt", sep = " ", header = TRUE )
 graph <- graph.data.frame(df, directed = FALSE )
 plot(graph, vertex.label=V(graph)$name)
 eigen_centrality(graph)
