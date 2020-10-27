@@ -6,7 +6,7 @@ library(igraph)
 ## Wizualizacja
 df <- read.table("data/reachability.txt", sep = " ", header = FALSE)
 graph <- graph.data.frame(df)
-# plot(graph)
+#plot(graph)
 
 # Srednica w grafie nieskierowanym
 d = diameter(graph, directed = FALSE, weights=NA)
