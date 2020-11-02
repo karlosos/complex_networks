@@ -1,6 +1,6 @@
 \documentclass{article}
 
-\title{Algorytmy wyznaczania metryk i miar centralności sieci}
+\title{Algorytmy i metody detekcji społeczności}
 
 \author{
   Karol Działowski \\
@@ -81,6 +81,200 @@
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 \maketitle
+
+\section{Zadanie wprowadzające}
+
+\subsection{Detekcja społeczności}
+
+<<>>=
+library("igraph")
+graph <- sample_gnm(n=30, m=30)
+plot(graph, vertex.label=NA, vertex.size=18, vertex.label.cex = 1.3)
+
+communities <- cluster_louvain(graph, weights = NULL)
+length(communities) # liczba spolecznosci
+sizes(communities) # rozmiary spolecznosci
+members <- membership(communities) # w tablicy dla kazdego wezla przypisane jest community id
+modularity(communities)
+crossing(communities, graph) # lacznosc pomiedzy spolecznosciami 
+@
+
+
+\subsection{Wizualizacja społeczności}
+
+\subsubsection{Wizualizacja społeczności na grafie}
+
+
+<<>>=
+plot(communities, graph)
+@
+
+\begin{figure}[H]
+\centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(communities, graph)
+@
+\caption{Wizualizacja społeczności}
+\label{fig:test}
+\end{figure}
+
+
+\subsubsection{Dendrogram i pdejście hierarchiczne}
+
+<<>>=
+karate <- make_graph("Zachary")
+fc <- cluster_fast_greedy(karate)
+plot_dendrogram(fc)
+plot(fc, karate)
+@
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot_dendrogram(fc)
+@
+  \caption{Dendrogram}
+\end{subfigure}
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(fc, karate)
+@
+  \caption{Podejscie hierarhiczne}
+\end{subfigure}
+\caption{Dendrogram i podejscie hierarhiczne}
+\end{figure}
+
+\subsection{Inne algorytmy}
+
+<<>>=
+# Random walk
+cw <- cluster_walktrap(graph, weights = E(graph)$weight, steps = 2, 
+                       merges = TRUE, modularity = TRUE, membership = TRUE)
+plot_dendrogram(cw)
+plot(cw, karate)
+
+# Eigenvector
+cl <- cluster_leading_eigen(graph, steps = -1, weights = NULL, 
+                            start = NULL, options = arpack_defaults, callback = NULL,
+                      extra = NULL, env = parent.frame())
+plot_dendrogram(cl)
+plot(cl, karate)
+
+# Betweenness krawedzi
+ceb <- cluster_edge_betweenness(graph, weights = E(graph)$weight, 
+                          directed = TRUE, edge.betweenness = TRUE,
+                          merges = TRUE, bridges = TRUE, modularity = TRUE, membership = TRUE)
+plot_dendrogram(ceb)
+plot(ceb, karate)
+
+# Etykiety & voting
+clp <- cluster_label_prop(graph, weights = NULL, initial = NULL, fixed = NULL)
+plot(clp, karate)
+
+# Greedy
+cfg <- cluster_fast_greedy(graph)
+plot(cfg, karate)
+@
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot_dendrogram(cw)
+@
+  \caption{Dendrogram cluster walktrap}
+\end{subfigure}
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(cw, karate)
+@
+  \caption{Cluster walktrap}
+\end{subfigure}
+\\
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot_dendrogram(cl)
+@
+  \caption{Dendrogram cluster leading eigen}
+\end{subfigure}
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(cl, karate)
+@
+  \caption{Cluster leading eigen}
+\end{subfigure}
+\\
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot_dendrogram(ceb)
+@
+  \caption{Dendrogram cluster edge betweenness}
+\end{subfigure}
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(ceb, karate)
+@
+  \caption{Cluster edge betweenness}
+\end{subfigure}
+\\
+\caption{Inne algorytmy}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(clp, karate)
+@
+  \caption{Cluster label prop}
+\end{subfigure}
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(cfg, karate)
+@
+  \caption{Cluster fast greedys}
+\end{subfigure}
+\\
+\caption{Inne algorytmy}
+\end{figure}
+
+
+\section{Badanie wpływu parametrów sieci syntetycznej na strukturę społeczności w grafie}
+
+\begin{enumerate}
+\item Dla wybranego modelu teoretycznego sieci wygenerować 5 sieci z różnymi parametrami i liczbą węzłów około 30
+\item Dla każdej sieci z udziałem dowolnego algorytmu wyznaczyć wektor społeczności, modularność, liczbę społeczności i liczbę węzłów w każdej z nich dla grafu nieskierowanego
+\item Zwizualizować społeczność w każdej sieci
+\item Określić w jaki sposób parametry sieci teoretycznej wpływały na strukturę społeczności
+\item Wygenerować mały graf w wersji skierowanej i porównać wyniki działania detekcji społeczności z uwzględnieniem lub bez uwzględnienia wag.
+\end{enumerate}
+
+<<>>=
+ba <- sample_pa(n=50, power=1, m=1, directed=F)
+plot(ba, vertex.size=6, vertex.label=NA)
+
+communities <- cluster_louvain(graph, weights = NULL)
+
+length(communities) 
+sizes(communities)
+members <- membership(communities)
+modularity(communities)
+crossing(communities, graph)
+@
+
+
+\section{Badanie struktury społeczności sieci rzeczywistej}
 
 \begin{figure}[H]
 \centering

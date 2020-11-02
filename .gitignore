@@ -3,3 +3,6 @@ data/out/
 *.log
 *.gz
 *.tex
+*.aux
+Rplots.pdf
+l4.pdf
