@@ -1,2 +1,5 @@
 .venv/
 data/out/
+*.log
+*.gz
+*.tex
