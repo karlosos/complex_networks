@@ -151,31 +151,31 @@ plot(fc, karate)
 
 <<>>=
 # Random walk
-cw <- cluster_walktrap(graph, weights = E(graph)$weight, steps = 2, 
+cw <- cluster_walktrap(karate, weights = E(graph)$weight, steps = 2, 
                        merges = TRUE, modularity = TRUE, membership = TRUE)
 plot_dendrogram(cw)
 plot(cw, karate)
 
 # Eigenvector
-cl <- cluster_leading_eigen(graph, steps = -1, weights = NULL, 
+cl <- cluster_leading_eigen(karate, steps = -1, weights = NULL, 
                             start = NULL, options = arpack_defaults, callback = NULL,
                       extra = NULL, env = parent.frame())
 plot_dendrogram(cl)
 plot(cl, karate)
 
 # Betweenness krawedzi
-ceb <- cluster_edge_betweenness(graph, weights = E(graph)$weight, 
+ceb <- cluster_edge_betweenness(karate, weights = E(graph)$weight, 
                           directed = TRUE, edge.betweenness = TRUE,
                           merges = TRUE, bridges = TRUE, modularity = TRUE, membership = TRUE)
 plot_dendrogram(ceb)
 plot(ceb, karate)
 
 # Etykiety & voting
-clp <- cluster_label_prop(graph, weights = NULL, initial = NULL, fixed = NULL)
+clp <- cluster_label_prop(karate, weights = NULL, initial = NULL, fixed = NULL)
 plot(clp, karate)
 
 # Greedy
-cfg <- cluster_fast_greedy(graph)
+cfg <- cluster_fast_greedy(karate)
 plot(cfg, karate)
 @
 
@@ -260,30 +260,164 @@ plot(cfg, karate)
 \item Wygenerować mały graf w wersji skierowanej i porównać wyniki działania detekcji społeczności z uwzględnieniem lub bez uwzględnienia wag.
 \end{enumerate}
 
+Wygenerowano 5 sieci na podstawie modelu Barabasi-Albert.\cite{Albert_2002} Sterowano parametrami $p$ -- \emph{power}, oraz $m$ -- liczba krawędzi dołączanych w każdym kroku budowy sieci.
+
 <<>>=
-ba <- sample_pa(n=50, power=1, m=1, directed=F)
-plot(ba, vertex.size=6, vertex.label=NA)
+ba1 <- sample_pa(n=50, power=1, m=1, directed=F)
+ba2 <- sample_pa(n=50, power=2, m=1, directed=F)
+ba3 <- sample_pa(n=50, power=3, m=1, directed=F)
+ba4 <- sample_pa(n=50, power=1, m=2, directed=F)
+ba5 <- sample_pa(n=50, power=1, m=3, directed=F)
 
-communities <- cluster_louvain(graph, weights = NULL)
+communities1 <- cluster_louvain(ba1, weights = NULL)
+length(communities1) 
+sizes(communities1)
+members <- membership(communities1)
+modularity(communities1)
+crossing(communities1, graph)
+plot(communities1, ba1)
 
+communities2 <- cluster_louvain(ba2, weights = NULL)
+length(communities2) 
+sizes(communities2)
+members <- membership(communities2)
+modularity(communities2)
+crossing(communities2, graph)
+plot(communities2, ba2)
+
+communities3 <- cluster_louvain(ba3, weights = NULL)
+length(communities3) 
+sizes(communities3)
+members <- membership(communities3)
+modularity(communities3)
+crossing(communities3, graph)
+plot(communities3, ba3)
+
+communities4 <- cluster_louvain(ba4, weights = NULL)
+length(communities4) 
+sizes(communities4)
+members <- membership(communities4)
+modularity(communities4)
+crossing(communities4, graph)
+plot(communities4, ba4)
+
+communities5 <- cluster_louvain(ba5, weights = NULL)
+length(communities5) 
+sizes(communities5)
+members <- membership(communities5)
+modularity(communities5)
+crossing(communities5, graph)
+plot(communities5, ba4)
+@
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(communities1, ba1)
+@
+  \caption{Model BA $n=50, p=1, m=1$}
+\end{subfigure}
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(communities2, ba2)
+@
+  \caption{Model BA $n=50, p=2, m=1$}
+\end{subfigure}
+\\
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(communities3, ba3)
+@
+  \caption{Model BA $n=50, p=3, m=1$}
+\end{subfigure}
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(communities4, ba4)
+@
+  \caption{Model BA $n=50, p=1, m=2$}
+\end{subfigure}
+\\
+\begin{subfigure}{.49\linewidth}
+  \centering
+<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+plot(communities5, ba5)
+@
+  \caption{Model BA $n=50, p=1, m=3$}
+\end{subfigure}
+\caption{Porównanie dzialania klasteryzacji na modelu BA}
+\end{figure}
+
+Zwiększając parametr $p$ zwiększa się centralność sieci, to znaczy wyłaniają się węzły centralne, do których prawdopodobieństwo przyłączenia się zwiększa. Dla $p=1$ wyróżniono 8 społeczności, gdzie dla $p=3$ były to 3 społeczności.
+
+Parametr $m$ ma wpływ na liczbę połączeń pomiędzy węzłami. To znaczy dla parametru $m=1$ w każdej iteracji tworzona jest jedna krawędź dla węzła. Zwiększając ten parametr zwiększa się liczba krawędzi w grafie, a co za tym idzie trudniej jeest wyłonić jednoznacznie społeczności. Dla $m=2$ i $m=3$ wyznaczono odpowiednio 7 i 8 społeczności.
+
+Następnie wygenerowano mały graf w wersji skierowanej i porównano wyniki działania detekcji społeczności z uwzględnieniem lub bez uwzględnienia wag.
+
+<<>>=
+g <- sample_pa(n=50, power=1, m=1, directed=T)
+
+communities <- cluster_edge_betweenness(g, weights = NULL, directed = FALSE)
+length(communities) 
+sizes(communities)
+members <- membership(communities)
+plot(communities, g)
+
+E(g)$weight <- seq_len(ecount(g))
+
+communities <- cluster_edge_betweenness(g, weights = E(g)$weight, directed = TRUE)
+length(communities) 
+sizes(communities)
+members <- membership(communities)
+plot(communities, g)
+@
+
+Liczności dla wygenerowanego grafu skierowanego z uwzględnieniem wag nieznacznie się różnią od grafu z pominiętymi kierunkami wierzchołków i wagami węzłów. Liczba społeczności jest identyczna.
+
+
+\section{Badanie struktury społeczności sieci rzeczywistej}
+
+\begin{enumerate}
+\item Dla wybranej sieci rzeczywistej (np. wykorzystywanej w zadaniu z Lab 3) wyznaczyć społeczności, modularność, liczbę społeczności i liczbę węzłów w każdej z nich.
+\item Zwizualizować społeczności na grafie.
+\item Zliczyć dla każdej społeczności liczbę powiązań zewnętrznych.
+\item Wyznaczyć dla każdej społeczności średni stopień wierzchołka. Można wykorzystać w tym celu obiekt data frame i połączyć w nim wektor degree z wektorem uzyskanym z communities który przypisuje do każdego węzła identyfikator społeczności. Załączyć w sprawozdaniu kod wymagany do realizacji obliczeń.
+\end{enumerate}
+
+
+<<>>=
+net <- read.graph("../data/voles/mammalia-voles-rob-trapping-11.edges", format = "edgelist")
+plot(net)
+
+communities <- cluster_edge_betweenness(net, weights = NULL)
 length(communities) 
 sizes(communities)
 members <- membership(communities)
 modularity(communities)
 crossing(communities, graph)
+plot(communities, net)
 @
-
-
-\section{Badanie struktury społeczności sieci rzeczywistej}
 
 \begin{figure}[H]
 \centering
 <<fig=TRUE, echo=FALSE, fig.align='center'>>=
-plot(cars)
+plot(communities, net)
 @
-\caption{Tekst}
+\caption{Wizualizacja społeczności w sieci karczowników}
 \label{fig:test}
 \end{figure}
 
 
 \end{document}
+
+% TODO:
+% - [ ] wykreślenie plotów dla badania skierowanych z wagami 
+% - [x] wczytanie sieci rzeczywistej
+% - [x] wyznaczanie mair w sieci rzeczywistej
+% - [x] wizualizacja społeczności w sieci rzeczywistej
+% - [ ] dla każdej społeczności wyznaczyć średni stopień wierzchołka
+% - [ ] opisać badanie sieci rzeczywistej
