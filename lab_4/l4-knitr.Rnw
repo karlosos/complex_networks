@@ -173,7 +173,7 @@ plot(communities, graph)
 
 \begin{figure}[H]
 \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center', out.width='4in'>>=
 plot(communities, graph)
 @
 \caption{Wizualizacja społeczności}
@@ -203,14 +203,14 @@ plot(fc, karate)
 \centering
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot_dendrogram(fc)
 @
   \caption{Dendrogram}
 \end{subfigure}
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(fc, karate)
 @
   \caption{Podejscie hierarhiczne}
@@ -264,64 +264,68 @@ plot(cfg, karate)
 \centering
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot_dendrogram(cw)
 @
   \caption{Dendrogram cluster walktrap}
 \end{subfigure}
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(cw, karate)
 @
   \caption{Cluster walktrap}
 \end{subfigure}
-\\
+\caption{Cluster walktrap}
+\end{figure}
+\begin{figure}[H]
+\centering
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot_dendrogram(cl)
 @
   \caption{Dendrogram cluster leading eigen}
 \end{subfigure}
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(cl, karate)
 @
   \caption{Cluster leading eigen}
 \end{subfigure}
-\\
+\caption{Cluster leading eigen}
+\end{figure}
+\begin{figure}[H]
+\centering
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot_dendrogram(ceb)
 @
   \caption{Dendrogram cluster edge betweenness}
 \end{subfigure}
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(ceb, karate)
 @
   \caption{Cluster edge betweenness}
 \end{subfigure}
-\\
-\caption{Inne algorytmy}
+\caption{Cluster edge betweenness}
 \end{figure}
-
 \begin{figure}[H]
 \centering
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(clp, karate)
 @
   \caption{Cluster label prop}
 \end{subfigure}
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(cfg, karate)
 @
   \caption{Cluster fast greedys}
@@ -395,14 +399,14 @@ plot(communities5, ba4)
 \centering
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(communities1, ba1)
 @
   \caption{Model BA $n=50, p=1, m=1$}
 \end{subfigure}
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(communities2, ba2)
 @
   \caption{Model BA $n=50, p=2, m=1$}
@@ -410,14 +414,14 @@ plot(communities2, ba2)
 \\
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(communities3, ba3)
 @
   \caption{Model BA $n=50, p=3, m=1$}
 \end{subfigure}
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(communities4, ba4)
 @
   \caption{Model BA $n=50, p=1, m=2$}
@@ -425,7 +429,7 @@ plot(communities4, ba4)
 \\
 \begin{subfigure}{.49\linewidth}
   \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center'>>=
 plot(communities5, ba5)
 @
   \caption{Model BA $n=50, p=1, m=3$}
@@ -469,7 +473,7 @@ Liczności dla wygenerowanego grafu skierowanego z uwzględnieniem wag nieznaczn
 \item Wyznaczono dla każdej społeczności średni stopień wierzchołka. 
 \end{enumerate}
 
-Wybrano bazę \emph{MAMMALIA-VOLES-BHP-TRAPPING-26}\cite{nr-aaai15}. Reprezentuje ona sieć karczowników, małych ssaków podobnych do chomików. Zdjęcie karczownika przedstawiono na rysunku \ref{fig:vole}. Krawędzie w sieci były tworzone za każdym razem gdy dwa karczowniki były złapane w co najmniej jednej wspólnej klatce podczas jednej sesji łapania karczowników. Sieć przedstawia relacje ,,społeczne'' pomiędzy karczownikami.
+Wybrano bazę \emph{MAMMALIA-VOLES-BHP-TRAPPING-26}\cite{nr-aaai15}. Reprezentuje ona sieć karczowników, małych ssaków podobnych do chomików. Zdjęcie karczownika przedstawiono na rysunku 6. Krawędzie w sieci były tworzone za każdym razem gdy dwa karczowniki były złapane w co najmniej jednej wspólnej klatce podczas jednej sesji łapania karczowników. Sieć przedstawia relacje ,,społeczne'' pomiędzy karczownikami.
 
 \begin{figure}[H]
   \centering
@@ -494,13 +498,13 @@ plot(communities, net)
 
 \begin{figure}[H]
 \centering
-<<fig=TRUE, echo=FALSE, fig.align='center'>>=
+<<echo=FALSE, fig.align='center', out.width='4in'>>=
 plot(communities, net)
 @
 \caption{Wizualizacja społeczności w sieci karczowników}
 \end{figure}
 
-Wyznaczono średni stopień dla każdej społeczności. Z danych wynika, że większość społeczności obejmują tylko jednego karczownika.
+Wyznaczono średni stopień dla każdej społeczności. Z danych wynika, że większość społeczności zawiera jednego karczownika.
 
 % https://stackoverflow.com/questions/11562656/calculate-the-mean-by-group
 <<fig.keep='none'>>=
@@ -510,8 +514,6 @@ a <- data.frame(degree = d, community = c(m))
 tapply(a$degree, a$community, mean)
 sort(aggregate(degree ~ community, a, mean ))
 @
-
-\printbibliography
 
 \end{document}
 
