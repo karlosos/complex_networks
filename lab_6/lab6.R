@@ -177,8 +177,9 @@ layer_comparison_ml(net,method="rho.degree")
 
 # Slajd 19
 # Wizualizacja
-layout_multiforce_ml(n, w_in = 1, w_inter = 1, gravity = 0, iterations = 100)
-layout_circular_ml(n)
+net <- ml_florentine()
+l <- layout_multiforce_ml(net, w_in = 1, w_inter = 1, gravity = 0, iterations = 100)
+plot(net, layout=l)
 net <- ml_florentine()
 layout_multiforce_ml(net)
 l <- layout_circular_ml(net)

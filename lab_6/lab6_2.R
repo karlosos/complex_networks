@@ -2,16 +2,16 @@ library(multinet)
 library(igraph)
 
 # Siec 1 takie same rewiring probabilities
-ws1_1 <- sample_smallworld(dim=1, size=10, nei=1, p=0.1)
-ws1_1 <- set_vertex_attr(ws1_1, "name", value = LETTERS[1:10])
-ws1_2 <- sample_smallworld(dim=1, size=10, nei=1, p=0.1)
-ws1_2 <- set_vertex_attr(ws1_2, "name", value = LETTERS[1:10])
+ws1_1 <- sample_smallworld(dim=1, size=20, nei=1, p=0.1)
+ws1_1 <- set_vertex_attr(ws1_1, "name", value = LETTERS[1:20])
+ws1_2 <- sample_smallworld(dim=1, size=20, nei=1, p=0.1)
+ws1_2 <- set_vertex_attr(ws1_2, "name", value = LETTERS[1:20])
 
 # Siec 2 różne rewiring probabilities
-ws2_1 <- sample_smallworld(dim=1, size=10, nei=1, p=0.1)
-ws2_1 <- set_vertex_attr(ws2_1, "name", value = LETTERS[1:10])
-ws2_2 <- sample_smallworld(dim=1, size=10, nei=1, p=0.8)
-ws2_2 <- set_vertex_attr(ws2_2, "name", value = LETTERS[1:10])
+ws2_1 <- sample_smallworld(dim=1, size=20, nei=1, p=0.1)
+ws2_1 <- set_vertex_attr(ws2_1, "name", value = LETTERS[1:20])
+ws2_2 <- sample_smallworld(dim=1, size=20, nei=1, p=0.8)
+ws2_2 <- set_vertex_attr(ws2_2, "name", value = LETTERS[1:20])
 
 # Tworzenie sieci
 createML <- function(ws1, ws2) {
@@ -36,12 +36,10 @@ addInterLayersEdges <- function(net, num) {
 # 5 Polaczen
 #
 net1 <- createML(ws1_1, ws1_2)
-plot(net1)
 addInterLayersEdges(net1, 5)
 plot(net1)
 
 net2 <- createML(ws2_1, ws2_2)
-plot(net2)
 addInterLayersEdges(net2, 5)
 plot(net2)
 
@@ -73,12 +71,10 @@ modularity_ml(net2, comm, gamma=1, omega=1)
 #
 # 5 Polaczen
 net1 <- createML(ws1_1, ws1_2)
-plot(net1)
 addInterLayersEdges(net1, 10)
 plot(net1)
 
 net2 <- createML(ws2_1, ws2_2)
-plot(net2)
 addInterLayersEdges(net2, 10)
 plot(net2)
 
@@ -108,12 +104,10 @@ modularity_ml(net2, comm, gamma=1, omega=1)
 # 20 polaczen
 #
 net1 <- createML(ws1_1, ws1_2)
-plot(net1)
 addInterLayersEdges(net1, 20)
 plot(net1)
 
 net2 <- createML(ws2_1, ws2_2)
-plot(net2)
 addInterLayersEdges(net2, 20)
 plot(net2)
 
