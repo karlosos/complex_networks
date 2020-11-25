@@ -13,6 +13,7 @@
 from igraph import *
 import random
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def seeding(g, m):
@@ -38,22 +39,67 @@ def update_labels(g):
     """
     :param g: graph
     """
-    degrees = [d for d in g.degree()]  # TODO: change to number of activated neighbors
-    # print(g.neighbors(g.vs[1]))
-    g.vs["label"] = [(g.vs.indices[i], degrees[i]) for i in range(len(degrees))]
+    for i in g.vs.indices:
+        g.vs[i]["neighbors_activated_count"] = np.sum([g.vs[n]["activated"] for n in g.neighbors(g.vs[i])])
+    g.vs["label"] = [(g.vs.indices[i], g.vs[i]["neighbors_activated_count"], g.vs[i]["neighbors_count"]) for i in
+                     range(len(g.vs.indices))]
+
+
+def simulation_step(g, n):
+    """
+    Perform single iteration. For each node check if percentage of activated neighbors exceed
+    threshold defined by n.
+    :param g: graph
+    :param n: threshold, required ratio of activated neighbors to activate
+    """
+    has_activation_happened = False
+    for i in g.vs.indices:
+        if not g.vs[i]["activated"]:
+            neighbors_count = g.vs[i]["neighbors_count"]
+            if neighbors_count:
+                neighbors_activated_count = g.vs[i]["neighbors_activated_count"]
+                neighbors_activated_ratio = neighbors_activated_count/neighbors_count
+                if neighbors_activated_ratio > n:
+                    g.vs[i]["activated"] = True
+                    has_activation_happened = True
+
+    update_colors(g)
+    update_labels(g)
+    activated_nodes_count = np.sum(g.vs["activated"])
+    return g, activated_nodes_count, has_activation_happened
+
+
+def simulation(g, m, n):
+    g.vs["activated"] = False
+    for i in g.vs.indices:
+        g.vs[i]["neighbors_count"] = len(g.neighbors(g.vs[i]))
+    g.vs["color"] = "orange"
+    g.vs["size"] = 50
+
+    seeding(g, m=m)
+    update_colors(g)
+    update_labels(g)
+    # plot(g)
+
+    g_history = [deepcopy(g)]
+    activated_nodes_counts = [np.sum(g.vs["activated"])]
+    has_activation_happened = True
+    while has_activation_happened:
+        g, activated_nodes_count, has_activation_happened = simulation_step(g, n)
+        g_history.append(deepcopy(g))
+        activated_nodes_counts.append(activated_nodes_count)
+        # plot(g)
+    return g_history, activated_nodes_counts
 
 
 def main():
-    g = Graph.Watts_Strogatz(dim=1, size=20, nei=3, p=0.3)
-    g.vs["activated"] = False
-    g.vs["color"] = "orange"
-    g.vs["size"] = 50
-    seeding(g, 5)
-    update_colors(g)
-    update_labels(g)
+    g = Graph.Watts_Strogatz(dim=1, size=20, nei=3, p=0.8)
+    g_history, activated_nodes_counts = simulation(g, m=5, n=0.3)
+    plt.plot(activated_nodes_counts)
+    plt.show()
 
-    # g.vs[2]["color"] = "red"
-    plot(g)
+    for g in g_history:
+        plot(g)
 
 
 if __name__ == '__main__':
