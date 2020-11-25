@@ -103,4 +103,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    g = Graph.Watts_Strogatz(dim=1, size=50, nei=5, p=0.8)
+    plot(g)
