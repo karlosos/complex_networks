@@ -1,33 +1,41 @@
-"""
-- [x] Przygotować sieć WS z około 20 węzłami
-- Model SIR przy założeniach
-    - wybieramy z sieci losowo n węzłów 
-    - zadany jest próg aktywacji b który określa prawdopodobieństwo przekazania informacji
-    - pradopodobieństwo `m` przejścia ze stanu infected I do removed R
-    - [x] w pierwszym kroku symulacji t0 aktywizujemy losowo n węzłów (seed set) i
-    oznaczamy je kolorem czerwonym (pogląd na wizualizacji grafu)
-    - w kolejnych krokach każdy węzeł ze stanem I kontuje się z każdym sąsiadem i z
-    prawdopodobieństwem b go infekuje. Następnie węzły zainfekowane przechodzą do stanu R 
-    z prawdopodobieństwem m.
-    - proces trwa do momentu przejścia wszystkich węzłów do stanu R
-    - w każdym kroku zapisujemy do pliku liczbę węzłów w każdym ze stanów
-    - na koniec procesu powstaje wykres z liczbą węzłów w każdym stanie
-- finish when there is noone in I
-
-Possible states = ["S", "I", "R"]
-"""
 from igraph import *
 import random
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-def seeding(g, n):
+def simulation(g, n, m, b):
     """
-    Random initialization of n nodes in graph g
+    SIR Model simulation
     :param g: graph
-    :param n: number of nodes to activate
+    :param n: size of initial infection
+    :param m: probability of recovery
+    :param b: probability of infection
+    :return: list of graphs in each step, array of S, I, R counts
     """
+    g.vs["state"] = "S"
+    g.vs["color"] = "orange"
+    g.vs["size"] = 50
+
+    seeding(g, n=n)
+    update_colors(g)
+
+    g_history = [deepcopy(g)]
+    counts = [count_states(g)]
+    flag = True
+    while flag:
+        infection(g, b=b)
+        recovery(g, m=m)
+        update_colors(g)
+        s_count, i_count, r_count = count_states(g)
+        counts.append((s_count, i_count, r_count))
+        flag = i_count != 0
+        g_history.append(deepcopy(g))
+
+    return g_history, np.array(counts)
+
+
+def seeding(g, n):
     indexes = g.vs.indices
     indexes_to_infect = random.sample(indexes, n)
     g.vs[indexes_to_infect]["state"] = "I" 
@@ -35,88 +43,45 @@ def seeding(g, n):
 
 
 def update_colors(g):
-    """
-    :param g: graph
-    """
-    activated_indexes = list(np.where(np.array(g.vs["state"]) == "I")[0])
-    print(np.where(g.vs["state"] == "I"))
-    print(activated_indexes)
-    g.vs[activated_indexes]["color"] = "red"
-
-
-def update_labels(g):
-    """
-    :param g: graph
-    """
-    for i in g.vs.indices:
-        g.vs["label"] = [g.vs.indices[i]]
+    infected_indexes = list(np.where(np.array(g.vs["state"]) == "I")[0])
+    g.vs[infected_indexes]["color"] = "red"
+    recovered_indexes = list(np.where(np.array(g.vs["state"]) == "R")[0])
+    g.vs[recovered_indexes]["color"] = "green"
 
 
 def infection(g, b):
-    print("infection")
     infected_indexes = list(np.where(np.array(g.vs["state"]) == "I")[0])
-    print("now")
     for i in infected_indexes:
-        print(g.vs[i])
-        susceptible_neighbors = g.vs[g.neighbors(g.vs[i])] == "I"
-        probs = np.random.rand(len(neighbors))
-        indexes_to_infect = neighbors[probs < b]
-        print(indexes_to_infect)
-        # print(neighbors)
-        # print(probs)
-        # print(probs < b)
-        # print(indexes_to_infect)
-        # g.vs[indexes_to_infect]["state"] = "I"
+        neighbors = g.neighbors(g.vs[i])
+        for neighbor in neighbors:
+            if g.vs[neighbor]["state"] == "S":
+                if np.random.rand() < b:
+                    g.vs[neighbor]["state"] = "I"
 
 
 def recovery(g, m):
-    pass
+    infected_indexes = list(np.where(np.array(g.vs["state"]) == "I")[0])
+    for i in infected_indexes:
+        if np.random.rand() < m:
+            g.vs[i]["state"] = "R"
 
 
-def calculate_states(g):
-    return 0, 0, 0
-
-
-def simulation(g, n, m):
-    """
-    SIR simulation
-    :param g: graph
-    :param n: number of initial infected nodes
-    :param m: probability of recovery
-    """
-    g.vs["state"] = "S" 
-    g.vs["color"] = "orange"
-    g.vs["size"] = 50
-
-    seeding(g, n=n)
-    update_colors(g)
-    update_labels(g)
-    # plot(g)
-    g_history = [deepcopy(g)]
-    flag = True
-    while flag:
-        infection(g, b=0.3)
-        recovery(g, m)
-        s_count, i_count, r_count = calculate_states(g)
-        flag = i_count != 0
-        g_history.append(deepcopy(g))
-
-    # g_history = [deepcopy(g)]
-    # activated_nodes_counts = [np.sum(g.vs["activated"])]
-    # has_activation_happened = True
-    # while has_activation_happened:
-    #     g, activated_nodes_count, has_activation_happened = simulation_step(g, n)
-    #     g_history.append(deepcopy(g))
-    #     activated_nodes_counts.append(activated_nodes_count)
-    #     # plot(g)
-    return g_history, 0
+def count_states(g):
+    infected_indexes = list(np.where(np.array(g.vs["state"]) == "I")[0])
+    recovered_indexes = list(np.where(np.array(g.vs["state"]) == "R")[0])
+    susceptible_indexes = list(np.where(np.array(g.vs["state"]) == "S")[0])
+    return len(susceptible_indexes), len(infected_indexes), len(recovered_indexes)
 
 
 def main():
-    g = Graph.Watts_Strogatz(dim=1, size=20, nei=3, p=0.8)
-    g_history, activated_nodes_counts = simulation(g, n=5, m=0.3)
-    # plt.plot(activated_nodes_counts)
-    # plt.show()
+    g = Graph.Watts_Strogatz(dim=1, size=2000, nei=3, p=0.8)
+    g_history, counts = simulation(g, n=5, m=0.3, b=0.3)
+    plt.plot(counts[:, 0], label="Susceptible", c='orange')
+    plt.plot(counts[:, 1], label="Infected", c='red')
+    plt.plot(counts[:, 2], label="Recovered", c='green')
+
+    plt.legend()
+    plt.show()
 
     # for g in g_history:
     #     plot(g)
@@ -124,5 +89,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # g = Graph.Watts_Strogatz(dim=1, size=50, nei=5, p=0.8)
-    # plot(g)
