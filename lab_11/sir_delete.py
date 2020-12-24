@@ -56,7 +56,6 @@ def seeding(g, n):
     indexes = g.vs.indices
     indexes_to_infect = random.sample(indexes, n)
     g.vs[indexes_to_infect]["state"] = "I"
-    print(g.vs[indexes_to_infect])
 
 
 def set_availability(g, limitation):
@@ -64,7 +63,6 @@ def set_availability(g, limitation):
     n = int(len(indexes) * limitation)
     indexes_to_disable = random.sample(indexes, n)
     g.vs[indexes_to_disable]["availability"] = False
-    print(g.vs[indexes_to_disable])
 
 
 def update_colors(g):
@@ -107,32 +105,59 @@ def ws():
     _, counts_5 = simulation(g, n=5, m=0.3, b=0.3, limitation=0.05)
     _, counts_10 = simulation(g, n=5, m=0.3, b=0.3, limitation=0.10)
     _, counts_20 = simulation(g, n=5, m=0.3, b=0.3, limitation=0.20)
+    plot_comparison(counts_orig, counts_5, counts_10, counts_20, title="Watts Strogatz")
 
+
+def plot_comparison(counts_orig, counts_5, counts_10, counts_20, title=""):
     fig, axes = plt.subplots(2, 2)
+    fig.suptitle(title)
 
-    
     axes[0, 0].plot(counts_orig[:, 0], label="Susceptible", c="orange")
     axes[0, 0].plot(counts_orig[:, 1], label="Infected", c="red")
     axes[0, 0].plot(counts_orig[:, 2], label="Recovered", c="green")
+    axes[0, 0].set_title("Sieć kompletna")
     axes[0, 0].legend()
 
     axes[0, 1].plot(counts_5[:, 0], label="Susceptible", c="orange")
     axes[0, 1].plot(counts_5[:, 1], label="Infected", c="red")
     axes[0, 1].plot(counts_5[:, 2], label="Recovered", c="green")
+    axes[0, 1].set_title("Usunięcie 5% węzłów")
     axes[0, 1].legend()
 
     axes[1, 0].plot(counts_10[:, 0], label="Susceptible", c="orange")
     axes[1, 0].plot(counts_10[:, 1], label="Infected", c="red")
     axes[1, 0].plot(counts_10[:, 2], label="Recovered", c="green")
+    axes[1, 0].set_title("Usunięcie 10% węzłów")
     axes[1, 0].legend()
 
     axes[1, 1].plot(counts_20[:, 0], label="Susceptible", c="orange")
     axes[1, 1].plot(counts_20[:, 1], label="Infected", c="red")
     axes[1, 1].plot(counts_20[:, 2], label="Recovered", c="green")
+    axes[1, 1].set_title("Usunięcie 20% węzłów")
     axes[1, 1].legend()
 
+    plt.tight_layout()
     plt.show()
+
+
+def ba():
+    g = Graph.Barabasi(n=2000, m=3)
+    _, counts_orig = simulation(g, n=5, m=0.3, b=0.3, limitation=0)
+    _, counts_5 = simulation(g, n=5, m=0.3, b=0.3, limitation=0.05)
+    _, counts_10 = simulation(g, n=5, m=0.3, b=0.3, limitation=0.10)
+    _, counts_20 = simulation(g, n=5, m=0.3, b=0.3, limitation=0.20)
+
+    plot_comparison(
+        counts_orig, counts_5, counts_10, counts_20, title="Barabasi Albert"
+    )
 
 
 if __name__ == "__main__":
     ws()
+    ba()
+
+    # Sprawdzenie czy, mają podobny stopień wierzchołka
+    g_ba = Graph.Barabasi(n=2000, m=3)
+    g_ws = Graph.Watts_Strogatz(dim=1, size=2000, nei=3, p=0.8)
+    print("BA:", np.mean(g_ba.degree()), len(g_ba.vs.indices))
+    print("WS:", np.mean(g_ws.degree()), len(g_ws.vs.indices))
