@@ -101,19 +101,38 @@ def count_states(g):
     return len(susceptible_indexes), len(infected_indexes), len(recovered_indexes)
 
 
-def main():
-    g = Graph.Watts_Strogatz(dim=1, size=20, nei=3, p=0.8)
-    g_history, counts = simulation(g, n=5, m=0.3, b=0.3, limitation=0.5)
-    plt.plot(counts[:, 0], label="Susceptible", c="orange")
-    plt.plot(counts[:, 1], label="Infected", c="red")
-    plt.plot(counts[:, 2], label="Recovered", c="green")
+def ws():
+    g = Graph.Watts_Strogatz(dim=1, size=2000, nei=3, p=0.8)
+    _, counts_orig = simulation(g, n=5, m=0.3, b=0.3, limitation=0)
+    _, counts_5 = simulation(g, n=5, m=0.3, b=0.3, limitation=0.05)
+    _, counts_10 = simulation(g, n=5, m=0.3, b=0.3, limitation=0.10)
+    _, counts_20 = simulation(g, n=5, m=0.3, b=0.3, limitation=0.20)
 
-    plt.legend()
+    fig, axes = plt.subplots(2, 2)
+
+    
+    axes[0, 0].plot(counts_orig[:, 0], label="Susceptible", c="orange")
+    axes[0, 0].plot(counts_orig[:, 1], label="Infected", c="red")
+    axes[0, 0].plot(counts_orig[:, 2], label="Recovered", c="green")
+    axes[0, 0].legend()
+
+    axes[0, 1].plot(counts_5[:, 0], label="Susceptible", c="orange")
+    axes[0, 1].plot(counts_5[:, 1], label="Infected", c="red")
+    axes[0, 1].plot(counts_5[:, 2], label="Recovered", c="green")
+    axes[0, 1].legend()
+
+    axes[1, 0].plot(counts_10[:, 0], label="Susceptible", c="orange")
+    axes[1, 0].plot(counts_10[:, 1], label="Infected", c="red")
+    axes[1, 0].plot(counts_10[:, 2], label="Recovered", c="green")
+    axes[1, 0].legend()
+
+    axes[1, 1].plot(counts_20[:, 0], label="Susceptible", c="orange")
+    axes[1, 1].plot(counts_20[:, 1], label="Infected", c="red")
+    axes[1, 1].plot(counts_20[:, 2], label="Recovered", c="green")
+    axes[1, 1].legend()
+
     plt.show()
-
-    for g in g_history:
-        plot(g)
 
 
 if __name__ == "__main__":
-    main()
+    ws()
