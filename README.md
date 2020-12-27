@@ -1,4 +1,6 @@
-#<h1 align="center">Complex Networks</h1>
+<img src="./docs/img.png" width=200 align="right">
+
+<h1 align="center">Complex Networks</h1>
 
 <div align="center">
 
@@ -6,20 +8,83 @@
 
 ## Lab 2
 
-### Zadanie 1
+Introduction to iGraph in R.
 
-Zapoznanie się z podstawowymi funkcjami biblioteki iGraph w pakiecie R (alternatywnie Python)
+- loading and saving graphs
+- visualisation
+- synthethic graphs (ER, BA, WS)
+- nodes degree
 
-1. Instalacja biblioteki igraph (slajd 8)
-2. Zapis i odczyt sieci z plików (slajd 12)
-3. Generowanie i wizualizacja prostych grafów (slajdy 13-19)
-4. Generowanie i wizualizacja sieci syntetycznych ER BA WS (slajdy 19-21)
-5. Układy grafów (slajdy 32, 33)
-6. Stopnie wierzchołków i rozkłady (35-37)
+## Lab 3
 
-### Zadanie 2
+Network metrics.
 
-Dla wybranej z repozytoriów danych dowolnej sieci o rozmiarze ok 100-200 węzłów, po zaimportowaniu, przygotować wizualizację z wykorzystaniem w wybranych algorytmów np. Fruchterman-Reingold i Kamada Kawai oraz wykres rozkładu stopni wierzchołków (slajd 37). Wykres i histogram zapisać do plików graficznych w formacie png.
+- shortest path
+- network diameter
+- closeness
+- betweenness
+
+## Lab 4
+
+Communities.
+
+- community detection (V. Blondel algorithm)
+- modularity metric
+- communities visualisation
+- dendrograms
+- karate club network
+
+![./docs/communities.png](./docs/communities.png)
+
+## Lab 5
+
+Temporal networks.
+
+- networkDynamic
+- Streaming Classroom Interactions Dataset
+- edges dynamics
+- centrality dynamics
+- fwd and bkwd paths
+- animations
+
+## Lab 6
+
+Multilayer networks.
+
+- multinet
+- metrics for multilayer networks
+- communities detection
+- distance metrics
+- loading/saving to file
+- evolving network
+- layers comparison
+- visualisation
+
+## Lab 7
+
+Social influence
+
+- Linear Threshold model
+
+![./docs/linear_threshold.png](./docs/linear_threshold.png)
+
+## Lab 8
+
+SIR Model
+
+![./docs/sir.png](./docs/sir.png)
+
+## Lab 9
+
+SIR model with adaptive availability. Added parameter of availability of edges.
+
+## Lab 10
+
+Concurrent processes on SIR model.
+
+## Lab 11
+
+SIR model with pernament deletion of nodes.
 
 ## Sources
 
